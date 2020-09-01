@@ -21,9 +21,9 @@ export default class Navbar extends Component {
       <header className="main-header">
         <div className="container">
           <div className="brand">
-            <a href="/">
+            <Link to="/">
               <img src={logo} alt="Corona Tracker" />
-            </a>
+            </Link>
           </div>
 
           <nav className="main-nav">
@@ -34,7 +34,7 @@ export default class Navbar extends Component {
               <Link to="/" className="active">
                 Home
               </Link>
-              <Link to="/">Compare Stats</Link>
+              <Link to="/stats">Compare Stats</Link>
               <Link to="/more-info">More Info</Link>
             </div>
             <button className="toggle-nav" onClick={this.toggleClass}>
