@@ -1,37 +1,59 @@
-import React, { Component } from "react";
+import React from "react";
 import Section from "./Section";
 import CountUp from "react-countup";
 import Loading from "./Loading";
+import { makeStyles } from "@material-ui/core/styles";
+import { Card, CardContent, Typography } from "@material-ui/core";
 
-export const Card = ({
+const useStyles = makeStyles({
+  root: {
+    fontFamily: "Poppins, sans-serif",
+    minWidth: 275,
+    background: "transparent",
+    color: "white",
+    boxShadow: "none",
+  },
+});
+
+export function SimpleCard({
   card: { title, cases, date, body, className },
   loading,
-}) => {
+}) {
+  const classes = useStyles();
   const getClass = (name) => `card ${name}`;
-  const CardContent = (
-    <React.Fragment>
-      <h4 className="title">{title}</h4>
-      <h1 className="cases">
-        <CountUp
-          start={0}
-          end={parseInt(cases)}
-          duration={2.5}
-          separator=","
-        ></CountUp>
-      </h1>
-      <h4 className="date">{date}</h4>
-      <p>{body}</p>
-    </React.Fragment>
+
+  const MyCardContent = (
+    <Card className={classes.root}>
+      <CardContent>
+        <Typography className="title" color="textSecondary" gutterBottom>
+          {title.toUpperCase()}
+        </Typography>
+        <Typography variant="h4" component="h4" className="cases">
+          <CountUp
+            start={0}
+            end={parseInt(cases)}
+            duration={2.5}
+            separator=","
+          ></CountUp>
+        </Typography>
+        <Typography className="date" color="textSecondary">
+          {date}
+        </Typography>
+        <Typography variant="body1" component="p">
+          {body}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 
   return (
     <div className={getClass(className)}>
-      {loading ? <Loading /> : CardContent}
+      {loading ? <Loading /> : MyCardContent}
     </div>
   );
-};
+}
 
-const Cards = ({ defaultData, country, loading }) => {
+const Cards = ({ data: { data, country, loading } }) => {
   var cards = [
     {
       title: "Infected",
@@ -51,10 +73,10 @@ const Cards = ({ defaultData, country, loading }) => {
   ];
 
   if (!loading) {
-    let { confirmed, recovered, deaths, lastUpdate } = defaultData;
+    let { confirmed, recovered, deaths, lastUpdate } = data;
     lastUpdate = new Date(lastUpdate).toDateString();
 
-    var cards = [
+    cards = [
       {
         title: "Infected",
         cases: confirmed,
@@ -84,7 +106,7 @@ const Cards = ({ defaultData, country, loading }) => {
       <Section title={country || "World Wide"} isShade>
         <div className="cards">
           {cards.map((card, index) => (
-            <Card card={card} key={index} loading={loading} />
+            <SimpleCard card={card} key={index} loading={loading} />
           ))}
         </div>
       </Section>

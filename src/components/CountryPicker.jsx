@@ -1,41 +1,65 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { fetchCountries } from "../api";
 
-export default class CountryPicker extends Component {
-  state = {
-    countries: [],
-  };
+import { makeStyles } from "@material-ui/core/styles";
+import { Select, FormControl, MenuItem, InputLabel } from "@material-ui/core";
 
-  async componentDidMount() {
-    const data = await fetchCountries();
-    if (data) {
-      this.setState({ countries: data });
-    }
-  }
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    width: "40%",
+    minWidth: "300px",
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+  center: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "30px",
+  },
+}));
 
-  render() {
-    const { countries } = this.state;
-    const { handleCountryChange } = this.props;
+const CountryPicker = ({ data: { handleCountryChange, country } }) => {
+  const [countries, setCountries] = useState([]);
+  const classes = useStyles();
+  useEffect(() => {
+    const getCountries = async () => {
+      setCountries(await fetchCountries());
+    };
 
-    return (
-      <form>
-        <select
-          name="country"
-          className="countrypicker"
+    getCountries();
+  }, []);
+
+  return (
+    <div className={classes.center}>
+      <FormControl variant="outlined" className={classes.formControl}>
+        <InputLabel id="demo-simple-select-outlined-label">
+          Select Country
+        </InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          value={country}
           onChange={(e) => {
             handleCountryChange(e.target.value);
           }}
+          label="Country Picker"
+          className={{ minWidth: 280 }}
         >
-          <option value="">Global</option>
-          {countries.map((country, index) => {
-            return (
-              <option value={country} key={index}>
+          <MenuItem value="">
+            <em>Global</em>
+          </MenuItem>
+
+          {countries.length &&
+            countries.map((country, index) => (
+              <MenuItem key={index} value={country}>
                 {country}
-              </option>
-            );
-          })}
-        </select>
-      </form>
-    );
-  }
-}
+              </MenuItem>
+            ))}
+        </Select>
+      </FormControl>
+    </div>
+  );
+};
+
+export default CountryPicker;

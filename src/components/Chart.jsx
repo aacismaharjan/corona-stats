@@ -15,8 +15,11 @@ export default class Chart extends Component {
 
   render() {
     const { dailyData } = this.state;
-    const { defaultData, country, loading } = this.props;
-    const { confirmed, recovered, deaths } = defaultData;
+    const {
+      data: { confirmed, recovered, deaths },
+      country,
+      loading,
+    } = this.props.data;
 
     const lineChart = dailyData.length ? (
       <Line
